@@ -1,10 +1,10 @@
 import {NextFunction, Request, Response} from 'express'
 import ApiError from '../exceptions/api-error'
-import {tokenService} from '../services/token-service'
+import {IUserData, tokenService} from '../services/token-service'
 
 
 export interface IGetUserAuthInfoRequest extends Request {
-  user?: Record<string, unknown>
+  user?: IUserData
 }
 
 export default function authMiddleware(req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) {

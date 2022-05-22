@@ -14,6 +14,7 @@ declare global {
       SMTP_PASSWORD: string;
       API_URL: string;
       CLIENT_URL: string;
+      VISUAL_CROSSING_KEY: string;
     }
   }
 }

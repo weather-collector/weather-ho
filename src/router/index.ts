@@ -1,4 +1,5 @@
 import {Router} from 'express'
+import {reportController} from '../controllers/report-controller'
 import {userController} from '../controllers/user-controller'
 import {body} from 'express-validator'
 import authMiddleware from '../middleware/auth-middleware'
@@ -15,7 +16,9 @@ router.post('/login', userController.login)
 
 router.post('/logout', userController.logout)
 
-router.post('/send-reset-email', userController.sendResetEmail)
+router.post('/send-reset-email',
+  body('email').isEmail(),
+  userController.sendResetEmail)
 
 router.post('/reset-password/:token', userController.resetPassword)
 
@@ -24,5 +27,13 @@ router.get('/activate/:link', userController.activate)
 router.get('/refresh', userController.refresh)
 
 router.get('/users', authMiddleware, userController.getUsers)
+
+// weather data
+
+router.post('/generate-report', authMiddleware, reportController.generateReport)
+
+router.get('/report/:id', authMiddleware, reportController.getReport)
+
+router.get('/reports', authMiddleware, reportController.getReports)
 
 export default router

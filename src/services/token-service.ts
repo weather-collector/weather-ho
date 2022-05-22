@@ -6,12 +6,14 @@ export type PayloadProps = {
   email: string
   id: string
   isActivated: boolean
+  isAdmin: boolean
 }
 
 export interface IUserData extends JwtPayload {
   email: string
   id: string
   isActivated: boolean
+  isAdmin: boolean
 }
 
 

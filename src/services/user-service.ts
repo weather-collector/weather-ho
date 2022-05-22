@@ -8,7 +8,7 @@ import ApiError from '../exceptions/api-error'
 
 
 interface IUserService {
-  email: string;
+  email: string
   password: string
 }
 
@@ -28,7 +28,7 @@ class UserService {
     })
     await mailService.sendActivationMail({to: email, link: `${process.env.API_URL}/api/activate/${activationLink}`})
 
-    const userDto = new UserDto({email: user.email, _id: user.id, isActivated: user.isActivated}) // id, email, isActivated
+    const userDto = new UserDto({email: user.email, _id: user.id, isActivated: user.isActivated, isAdmin: user.isAdmin}) // id, email, isActivated
     const accessToken = tokenService.generateAccessToken({...userDto})
     const refreshToken = tokenService.generateRefreshToken({...userDto})
     await tokenService.saveToken(userDto.id, refreshToken)
@@ -58,7 +58,7 @@ class UserService {
     if (!isPassEquals) {
       throw ApiError.BadRequest('Incorrect password')
     }
-    const userDto = new UserDto({email: user.email, _id: user.id, isActivated: user.isActivated}) // id, email, isActivated
+    const userDto = new UserDto({email: user.email, _id: user.id, isActivated: user.isActivated, isAdmin: user.isAdmin})
     const accessToken = tokenService.generateAccessToken({...userDto})
     const refreshToken = tokenService.generateRefreshToken({...userDto})
     await tokenService.saveToken(userDto.id, refreshToken)
@@ -75,18 +75,18 @@ class UserService {
     return token
   }
 
-  async sendResetPasswordEmail(email: string){
+  async sendResetPasswordEmail(email: string) {
     const user = await UserModel.findOne({email})
     if (!user) {
       throw ApiError.BadRequest('Such user was not found')
     }
-    const userDto = new UserDto({email: user.email, _id: user.id, isActivated: user.isActivated})
+    const userDto = new UserDto({email: user.email, _id: user.id, isActivated: user.isActivated, isAdmin: user.isAdmin})
     const accessToken = tokenService.generateAccessToken({...userDto})
 
     await mailService.sendResetPasswordMail({to: email, link: `${process.env.CLIENT_URL}/restore-password/${accessToken}`})
   }
 
-  async resetPassword(accessToken: string, password: string){
+  async resetPassword(accessToken: string, password: string) {
     if (!accessToken) {
       throw ApiError.UnauthorizedError()
     }
@@ -118,7 +118,8 @@ class UserService {
     const userDto = new UserDto({
       email: user?.email ?? '',
       _id: user?.id ?? '',
-      isActivated: user?.isActivated ?? false
+      isActivated: user?.isActivated ?? false,
+      isAdmin: user?.isAdmin ?? false,
     })
     const accessToken = tokenService.generateAccessToken({...userDto})
     const refreshToken = tokenService.generateRefreshToken({...userDto})

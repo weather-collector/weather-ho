@@ -46,6 +46,10 @@ class UserController {
 
   async sendResetEmail(req: Request, res: Response, next: NextFunction) {
     try {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest('Validation error', errors.array()))
+      }
       const {email} = req.body
       await userService.sendResetPasswordEmail(email)
       return res.status(200).json({message: `Email with instruction was successfully send to ${email}`})
