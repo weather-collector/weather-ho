@@ -32,7 +32,7 @@ router.get('/users', authMiddleware, userController.getUsers)
 
 router.post('/generate-report', authMiddleware, reportController.generateReport)
 
-router.get('/report/:id', authMiddleware, reportController.getReport)
+router.get('/reports/:id', authMiddleware, reportController.getReport)
 
 router.get('/reports', authMiddleware, reportController.getReports)
 

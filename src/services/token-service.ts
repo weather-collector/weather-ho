@@ -27,7 +27,7 @@ class TokenService {
 
   generateRefreshToken(payload: PayloadProps){
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET ?? '', {
-      expiresIn: '30d'
+      expiresIn: '7d'
     })
     return refreshToken
   }

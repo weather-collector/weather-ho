@@ -24,10 +24,11 @@ class ReportService {
         const userIDs = sameReports.map(report => report.user)
         const currentUser = userIDs.filter(id => id.toString() === user.id)
         if (currentUser.length !== 0) {
-          return {message: 'Ви уже маєте звіт згідно даної локації!'}
+          const report = await ReportModel.findOne({user: currentUser[0], latitude, longitude, dateRange})
+          return {message: 'Ви уже маєте звіт згідно даної локації!', reportId: report?.id}
         }
 
-        await ReportModel.create({
+        const  report = await ReportModel.create({
           dateRange: sameReports[0].dateRange,
           latitude: sameReports[0].latitude,
           longitude: sameReports[0].longitude,
@@ -35,12 +36,12 @@ class ReportService {
           weatherData: sameReports[0].weatherData,
           user: user.id,
         })
-        return {message: 'Звіт був успішно сформований'}
+        return {message: 'Звіт був успішно сформований', reportId: report.id}
       }
 
       if (sameReports.length === 0) {
         const response = await axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude}%2C%20${longitude}/${dateFrom}/${dateTo}?unitGroup=metric&elements=datetime%2Cname%2CresolvedAddress%2Clatitude%2Clongitude%2Ctempmax%2Ctempmin%2Ctemp%2Cdew%2Chumidity%2Cprecip%2Cprecipcover%2Cwindspeed%2Cwinddir%2Cpressure%2Ccloudcover%2Csolarradiation%2Csolarenergy%2Cuvindex&include=obs%2Cdays&key=${process.env.VISUAL_CROSSING_KEY}&contentType=json`)
-        await ReportModel.create({
+        const report = await ReportModel.create({
           dateRange: dateRange,
           latitude: latitude,
           longitude: longitude,
@@ -48,7 +49,7 @@ class ReportService {
           weatherData: response.data.days,
           user: user.id,
         })
-        return {message: 'Звіт був успішно сформований'}
+        return {message: 'Звіт був успішно сформований', reportId: report.id}
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -80,7 +81,17 @@ class ReportService {
 
   async getAllReports(user: IUserData) {
     const reports = await ReportModel.find({user: user.id})
-    return reports
+    return reports.map(report => (
+      new ReportDto({
+        _id: report._id,
+        requestDate: new Date(report.requestDate).toLocaleString(),
+        dateRange: report.dateRange,
+        latitude: report.latitude,
+        longitude: report.longitude,
+        address: report.address,
+        weatherData: report.weatherData,
+      })
+    ))
   }
 }
 

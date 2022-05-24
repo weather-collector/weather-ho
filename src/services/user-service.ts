@@ -109,7 +109,6 @@ class UserService {
     }
     const userData: IUserData | null = tokenService.validateRefreshToken(currentRefreshToken)
     const tokenFromDB = await tokenService.findToken(currentRefreshToken)
-
     if (!userData || !tokenFromDB) {
       throw ApiError.UnauthorizedError()
     }
