@@ -79,6 +79,15 @@ class ReportService {
     return reportDto
   }
 
+  async deleteSingleReport(reportId: string, user: IUserData) {
+    const report = await ReportModel.deleteOne({user: user.id, _id: reportId})
+    if (report.deletedCount === 1) {
+      return `Звіт ${reportId} було успішно видалено`
+    }
+    return 'Звіту з таким id не існує'
+  }
+
+
   async getAllReports(user: IUserData) {
     const reports = await ReportModel.find({user: user.id})
     return reports.map(report => (
@@ -91,7 +100,7 @@ class ReportService {
         address: report.address,
         weatherData: report.weatherData,
       })
-    ))
+    )).reverse()
   }
 }
 

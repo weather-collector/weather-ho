@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer'
 
 
 interface IMailService {
-  to: string;
+  to: string
   link: string
 }
 
@@ -11,12 +11,10 @@ class MailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: false,
+      service: 'gmail',
       auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD
+        pass: process.env.SMTP_PASSWORD,
       },
     })
   }
@@ -46,6 +44,21 @@ class MailService {
         <div>
           <h2>Для зміни пароля облікового запису перейдіть по наступному посиланню</h2>
           <a href="${link}">${link}</a>
+        </div>
+      `,
+    })
+  }
+
+  async sendGeneratedPassword(to: string, pass: string) {
+    await this.transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: to,
+      subject: `Weather Collector password`,
+      text: ``,
+      html: `
+        <div>
+          <h2>Ваш пароль для входу на сайті ${process.env.CLIENT_URL!}</h2>
+          <h3>${pass}</h3>
         </div>
       `,
     })

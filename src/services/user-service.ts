@@ -1,11 +1,17 @@
 import UserDto from '../dtos/user-dto'
 import {UserModel} from '../models/user-model'
 import bcrypt from 'bcrypt'
+import {OAuth2Client} from "google-auth-library"
 import {v4 as uuidv4} from 'uuid'
 import {mailService} from './mail-service'
 import {IUserData, tokenService} from './token-service'
 import ApiError from '../exceptions/api-error'
 
+
+const googleClient = new OAuth2Client({
+  clientId: `${process.env.GOOGLE_CLIENT_ID}`,
+  clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+})
 
 interface IUserService {
   email: string
@@ -47,6 +53,43 @@ class UserService {
     }
     user.isActivated = true
     await user.save()
+  }
+
+  async googleAuth(token: string) {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: token,
+      audience: `${process.env.GOOGLE_CLIENT_ID}`,
+    })
+    const payload = ticket.getPayload()
+    if (!payload?.email) {
+      throw ApiError.BadRequest('Google auth error')
+    }
+
+    let user = await UserModel.findOne({email: payload.email})
+    if (!user) {
+      const pass = uuidv4()
+      const hashPassword = await bcrypt.hash(pass, 3)
+      const activationLink = uuidv4()
+
+      user = await UserModel.create({
+        email: payload.email,
+        password: hashPassword,
+        isActivated: true,
+        activationLink,
+      })
+      await mailService.sendGeneratedPassword(payload.email, pass)
+    }
+
+    const userDto = new UserDto({email: user.email, _id: user.id, isActivated: user.isActivated, isAdmin: user.isAdmin})
+    const accessToken = tokenService.generateAccessToken({...userDto})
+    const refreshToken = tokenService.generateRefreshToken({...userDto})
+    await tokenService.saveToken(userDto.id, refreshToken)
+
+    return {
+      accessToken,
+      refreshToken,
+      user: userDto,
+    }
   }
 
   async login({email, password}: IUserService) {

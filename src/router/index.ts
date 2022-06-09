@@ -14,6 +14,8 @@ router.post('/registration',
 
 router.post('/login', userController.login)
 
+router.post('/google-auth', userController.googleAuth)
+
 router.post('/logout', userController.logout)
 
 router.post('/send-reset-email',
@@ -33,6 +35,8 @@ router.get('/users', authMiddleware, userController.getUsers)
 router.post('/generate-report', authMiddleware, reportController.generateReport)
 
 router.get('/reports/:id', authMiddleware, reportController.getReport)
+
+router.delete('/reports/:id', authMiddleware, reportController.deleteReport)
 
 router.get('/reports', authMiddleware, reportController.getReports)
 

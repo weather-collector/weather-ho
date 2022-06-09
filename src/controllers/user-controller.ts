@@ -22,6 +22,17 @@ class UserController {
     }
   }
 
+  async googleAuth(req: Request, res: Response, next: NextFunction) {
+    try {
+      const {token} = req.body
+      const userData = await userService.googleAuth(token)
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: MONTH, httpOnly: true, secure: false})
+      return res.json(userData)
+    } catch (error) {
+      next(error)
+    }
+  }
+
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const {email, password} = req.body

@@ -15,6 +15,8 @@ declare global {
       API_URL: string;
       CLIENT_URL: string;
       VISUAL_CROSSING_KEY: string;
+      GOOGLE_CLIENT_ID: string;
+      GOOGLE_CLIENT_SECRET: string;
     }
   }
 }

@@ -27,6 +27,16 @@ class ReportController {
     }
   }
 
+  async deleteReport(req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) {
+    try {
+      const reportId = req.params.id
+      const message = await reportService.deleteSingleReport(reportId, req.user!)
+      return res.json({message: message})
+    } catch (error) {
+      next(error)
+    }
+  }
+
   async getReports(req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) {
     try {
       const reportsData = await reportService.getAllReports(req.user!)
