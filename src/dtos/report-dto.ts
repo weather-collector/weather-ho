@@ -1,18 +1,18 @@
 export type WeatherData = {
   datetime: string,
-  tempMax: number,
-  tempMin: number,
+  tempmax: number,
+  tempmin: number,
   temp: number,
   dew: number,
   humidity: number,
-  precipitation: number,
-  precipitationCover: number,
-  windSpeed: number,
-  windDir: number,
+  precip: number,
+  precipcover: number,
+  windspeed: number,
+  winddir: number,
   pressure: number,
-  cloudCover: number,
-  solarRadiation: number | null,
-  solarEnergy: number | null,
+  cloudcover: number,
+  solarradiation: number | null,
+  solarenergy: number | null,
   uvIndex: number | null
 }
 

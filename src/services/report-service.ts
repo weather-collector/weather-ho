@@ -1,5 +1,5 @@
 import axios, {AxiosError} from 'axios'
-import ReportDto from '../dtos/report-dto'
+import ReportDto, {WeatherData} from '../dtos/report-dto'
 import ApiError from '../exceptions/api-error'
 import {IReport, ReportModel} from '../models/report-model'
 import {dateRangeFormat} from '../utils/dateFormat'
@@ -13,6 +13,8 @@ export interface IReportService {
   locationName: string
   user: IUserData
 }
+
+const k = 5 / 18
 
 class ReportService {
   async generateReport({latitude, longitude, dateRange, locationName, user}: IReportService) {
@@ -46,7 +48,7 @@ class ReportService {
           latitude: latitude,
           longitude: longitude,
           address: locationName,
-          weatherData: response.data.days,
+          weatherData: response.data.days.map((day: WeatherData) => ({...day, windspeed: day.windspeed * k})),
           user: user.id,
         })
         return {message: 'Звіт був успішно сформований', reportId: report.id}
