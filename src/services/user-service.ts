@@ -1,11 +1,11 @@
-import UserDto from '../dtos/user-dto'
-import {UserModel} from '../models/user-model'
 import bcrypt from 'bcrypt'
 import {OAuth2Client} from "google-auth-library"
 import {v4 as uuidv4} from 'uuid'
+import UserDto from '../dtos/user-dto'
+import ApiError from '../exceptions/api-error'
+import {UserModel} from '../models/user-model'
 import {mailService} from './mail-service'
 import {IUserData, tokenService} from './token-service'
-import ApiError from '../exceptions/api-error'
 
 
 const googleClient = new OAuth2Client({
@@ -114,8 +114,7 @@ class UserService {
   }
 
   async logout(refreshToken: string) {
-    const token = await tokenService.removeToken(refreshToken)
-    return token
+    return await tokenService.removeToken(refreshToken)
   }
 
   async sendResetPasswordEmail(email: string) {
@@ -141,8 +140,20 @@ class UserService {
     if (!user) {
       throw ApiError.UnauthorizedError()
     }
-    const hashPassword = await bcrypt.hash(password, 3)
-    user.password = hashPassword
+    user.password = await bcrypt.hash(password, 3)
+    await user.save()
+  }
+
+  async updatePassword(newPassword: string, currentPassword: string, userData: IUserData) {
+    const user = await UserModel.findById(userData.id)
+    if (!user) {
+      throw ApiError.UnauthorizedError()
+    }
+    const isPassEquals = await bcrypt.compare(currentPassword, user.password)
+    if (!isPassEquals) {
+      throw ApiError.BadRequest('Incorrect password')
+    }
+    user.password = await bcrypt.hash(newPassword, 3)
     await user.save()
   }
 
@@ -174,10 +185,18 @@ class UserService {
     }
   }
 
-
   async getAllUsers() {
     const users = await UserModel.find()
     return users
+  }
+
+  async sendEmail(theme: string, message: string, userData: IUserData) {
+    try {
+      await mailService.sendNotificationMail(theme, message, userData.email)
+    } catch (e) {
+      console.log(e)
+    }
+
   }
 }
 

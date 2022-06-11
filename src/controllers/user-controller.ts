@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from 'express'
 import {validationResult} from 'express-validator'
 import ApiError from '../exceptions/api-error'
+import {IGetUserAuthInfoRequest} from '../middleware/auth-middleware'
 import {userService} from '../services/user-service'
 
 
@@ -80,6 +81,16 @@ class UserController {
     }
   }
 
+  async updatePassword(req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) {
+    try {
+      const {newPassword, currentPassword} = req.body
+      await userService.updatePassword(newPassword, currentPassword, req.user!)
+      return res.status(200).json({message: `Your password was successfully updated`})
+    } catch (error) {
+      next(error)
+    }
+  }
+
   async activate(req: Request, res: Response, next: NextFunction) {
     try {
       const activationLink = req.params.link
@@ -105,6 +116,16 @@ class UserController {
     try {
       const users = await userService.getAllUsers()
       return res.json(users)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async sendEmail(req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) {
+    try {
+      const {theme, message} = req.body
+      await userService.sendEmail(theme, message, req.user!)
+      return res.status(200).json({message: `Your message was successfully delivered`})
     } catch (error) {
       next(error)
     }

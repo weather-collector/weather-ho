@@ -24,13 +24,13 @@ router.post('/send-reset-email',
 
 router.post('/reset-password/:token', userController.resetPassword)
 
+router.post('/update-password', authMiddleware, userController.updatePassword)
+
 router.get('/activate/:link', userController.activate)
 
 router.get('/refresh', userController.refresh)
 
 router.get('/users', authMiddleware, userController.getUsers)
-
-// weather data
 
 router.post('/generate-report', authMiddleware, reportController.generateReport)
 
@@ -39,5 +39,7 @@ router.get('/reports/:id', authMiddleware, reportController.getReport)
 router.delete('/reports/:id', authMiddleware, reportController.deleteReport)
 
 router.get('/reports', authMiddleware, reportController.getReports)
+
+router.post('/send-email', authMiddleware, userController.sendEmail)
 
 export default router

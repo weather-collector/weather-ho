@@ -63,6 +63,21 @@ class MailService {
       `,
     })
   }
+
+  async sendNotificationMail(theme: string, message: string, userEmail: string) {
+    await this.transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: process.env.SMTP_USER,
+      subject: theme,
+      text: ``,
+      html: `
+        <div>
+          <h3>${userEmail}</h3>
+          <p>${message}</p>
+        </div>
+      `,
+    })
+  }
 }
 
 export const mailService = new MailService()
