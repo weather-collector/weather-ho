@@ -6,6 +6,7 @@ import {userService} from '../services/user-service'
 
 
 const MONTH = 30 * 24 * 60 * 60 * 1000
+const WEEK = 7 * 24 * 60 * 60 * 1000
 
 class UserController {
   async registration(req: Request, res: Response, next: NextFunction) {
@@ -105,7 +106,7 @@ class UserController {
     try {
       const {refreshToken} = req.cookies
       const userData = await userService.refresh(refreshToken)
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: MONTH, httpOnly: true, secure: false})
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: WEEK, httpOnly: true, secure: true})
       return res.json(userData)
     } catch (error) {
       next(error)
