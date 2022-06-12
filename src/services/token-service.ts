@@ -6,26 +6,28 @@ export type PayloadProps = {
   email: string
   id: string
   isActivated: boolean
+  isAdmin: boolean
 }
 
 export interface IUserData extends JwtPayload {
   email: string
   id: string
   isActivated: boolean
+  isAdmin: boolean
 }
 
 
 class TokenService {
   generateAccessToken(payload: PayloadProps){
     const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET ?? '', {
-      expiresIn: '30m'
+      expiresIn: '15m'
     })
     return accessToken
   }
 
   generateRefreshToken(payload: PayloadProps){
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET ?? '', {
-      expiresIn: '30d'
+      expiresIn: '7d'
     })
     return refreshToken
   }
