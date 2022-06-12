@@ -1,7 +1,6 @@
-import {NextFunction, Request, Response} from 'express'
+import {NextFunction, Response} from 'express'
 import {IGetUserAuthInfoRequest} from '../middleware/auth-middleware'
 import {IReportService, reportService} from '../services/report-service'
-import {IUserData} from '../services/token-service'
 
 
 class ReportController {
