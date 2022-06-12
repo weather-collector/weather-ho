@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "weather-yo server",
   "main": "dist/app.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "start": "tsc && node dist/app.js",
     "dev": "nodemon src/app.ts",

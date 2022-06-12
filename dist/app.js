@@ -19,15 +19,21 @@ const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const router_1 = __importDefault(require("./router"));
+const error_middleware_1 = __importDefault(require("./middleware/error-middleware"));
 const PORT = process.env.PORT || 8000;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+}));
 app.use('/api', router_1.default);
+app.use(error_middleware_1.default);
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        yield mongoose_1.default.connect(process.env.DB_URL || '', {
+        yield mongoose_1.default.connect((_a = process.env.DB_URL) !== null && _a !== void 0 ? _a : '', {
             dbName: process.env.DB_NAME,
         });
         app.listen(PORT, () => {
@@ -38,5 +44,5 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(e);
     }
 });
-start();
+start().then();
 //# sourceMappingURL=app.js.map

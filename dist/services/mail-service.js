@@ -17,12 +17,10 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 class MailService {
     constructor() {
         this.transporter = nodemailer_1.default.createTransport({
-            host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT),
-            secure: false,
+            service: 'gmail',
             auth: {
                 user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASSWORD
+                pass: process.env.SMTP_PASSWORD,
             },
         });
     }
@@ -31,12 +29,60 @@ class MailService {
             yield this.transporter.sendMail({
                 from: process.env.SMTP_USER,
                 to: to,
-                subject: `Weather Collector Activation on ${process.env.API_URL}`,
+                subject: `Weather Collector Activation on ${process.env.CLIENT_URL}`,
                 text: ``,
                 html: `
         <div>
           <h2>Для активації облікового запису перейдіть по наступному посиланню</h2>
           <a href="${link}">${link}</a>
+        </div>
+      `,
+            });
+        });
+    }
+    sendResetPasswordMail({ to, link }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to: to,
+                subject: `Password reset on ${process.env.CLIENT_URL}`,
+                text: ``,
+                html: `
+        <div>
+          <h2>Для зміни пароля облікового запису перейдіть по наступному посиланню</h2>
+          <a href="${link}">${link}</a>
+        </div>
+      `,
+            });
+        });
+    }
+    sendGeneratedPassword(to, pass) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to: to,
+                subject: `Weather Collector password`,
+                text: ``,
+                html: `
+        <div>
+          <h2>Ваш пароль для входу на сайті ${process.env.CLIENT_URL}</h2>
+          <h3>${pass}</h3>
+        </div>
+      `,
+            });
+        });
+    }
+    sendNotificationMail(theme, message, userEmail) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to: process.env.SMTP_USER,
+                subject: theme,
+                text: ``,
+                html: `
+        <div>
+          <h3>${userEmail}</h3>
+          <p>${message}</p>
         </div>
       `,
             });

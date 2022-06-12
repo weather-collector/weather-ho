@@ -20,7 +20,7 @@ class ReportService {
   async generateReport({latitude, longitude, dateRange, locationName, user}: IReportService) {
     const {dateFrom, dateTo} = dateRangeFormat(dateRange)
     try {
-      let sameReports: IReport[] = await ReportModel.find({latitude, longitude, dateRange})
+      const sameReports: IReport[] = await ReportModel.find({latitude, longitude, dateRange})
 
       if (sameReports.length !== 0) {
         const userIDs = sameReports.map(report => report.user)

@@ -6,8 +6,9 @@ const UserSchema = new mongoose_1.Schema({
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     isActivated: { type: Boolean, default: false },
+    isAdmin: { type: Boolean, default: false },
     activationLink: { type: String },
-    reports: { type: mongoose_1.Schema.Types.ObjectId },
+    // reports: {type: Schema.Types.ObjectId, ref: 'Report'}, // ??
     firstName: { type: String },
     lastName: { type: String }
 });
