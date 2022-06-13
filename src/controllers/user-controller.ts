@@ -5,7 +5,6 @@ import {IGetUserAuthInfoRequest} from '../middleware/auth-middleware'
 import {userService} from '../services/user-service'
 
 
-const MONTH = 30 * 24 * 60 * 60 * 1000
 const WEEK = 7 * 24 * 60 * 60 * 1000
 
 class UserController {
@@ -28,7 +27,7 @@ class UserController {
     try {
       const {token} = req.body
       const userData = await userService.googleAuth(token)
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: WEEK, httpOnly: true, secure: true, domain: process.env.API_URL})
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: WEEK, httpOnly: true, secure: true})
       return res.json(userData)
     } catch (error) {
       next(error)
