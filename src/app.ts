@@ -10,6 +10,7 @@ import errorMiddleware from './middleware/error-middleware'
 const PORT = process.env.PORT || 8000
 const app: Express = express()
 
+app.enable('trust proxy')
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
