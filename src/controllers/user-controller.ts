@@ -28,7 +28,7 @@ class UserController {
     try {
       const {token} = req.body
       const userData = await userService.googleAuth(token)
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: WEEK, httpOnly: true, secure: false})
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: WEEK, httpOnly: true, secure: true, domain: process.env.API_URL})
       return res.json(userData)
     } catch (error) {
       next(error)
