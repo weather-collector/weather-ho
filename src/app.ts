@@ -11,11 +11,12 @@ const PORT = process.env.PORT || 8000
 const app: Express = express()
 
 app.enable('trust proxy')
+app.set('trust proxy', true)
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
   origin: process.env.CLIENT_URL,
-  credentials: true
+  credentials: true,
 }))
 app.use('/api', router)
 app.use(errorMiddleware)
