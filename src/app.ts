@@ -18,6 +18,7 @@ app.use(cors({
 }))
 app.use('/api', router)
 app.use(errorMiddleware)
+app.set('trust proxy', true)
 
 const start = async () => {
   try {
