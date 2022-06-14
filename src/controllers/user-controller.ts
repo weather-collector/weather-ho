@@ -7,6 +7,13 @@ import {userService} from '../services/user-service'
 
 const WEEK = 7 * 24 * 60 * 60 * 1000
 
+const cookieOptions = {
+  maxAge: WEEK,
+  httpOnly: true,
+  secure: true,
+  domain: process.env.NODE_ENV === 'production' ? `.${process.env.DOMAIN_NAME}` : undefined
+}
+
 class UserController {
   async registration(req: Request, res: Response, next: NextFunction) {
     try {
@@ -16,7 +23,7 @@ class UserController {
       }
       const {email, password} = req.body
       const userData = await userService.registration({email, password})
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: WEEK, httpOnly: true, secure: true, domain: `.${process.env.DOMAIN_NAME}`})
+      res.cookie('refreshToken', userData.refreshToken, cookieOptions)
       return res.json(userData)
     } catch (error) {
       next(error)
@@ -27,7 +34,7 @@ class UserController {
     try {
       const {token} = req.body
       const userData = await userService.googleAuth(token)
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: WEEK, httpOnly: true, secure: true, domain: `.${process.env.DOMAIN_NAME}`})
+      res.cookie('refreshToken', userData.refreshToken, cookieOptions)
       return res.json(userData)
     } catch (error) {
       next(error)
@@ -38,7 +45,7 @@ class UserController {
     try {
       const {email, password} = req.body
       const userData = await userService.login({email, password})
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: WEEK, httpOnly: true, secure: true, domain: `.${process.env.DOMAIN_NAME}`})
+      res.cookie('refreshToken', userData.refreshToken, cookieOptions)
       return res.json(userData)
     } catch (error) {
       next(error)
@@ -105,7 +112,7 @@ class UserController {
     try {
       const {refreshToken} = req.cookies
       const userData = await userService.refresh(refreshToken)
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: WEEK, httpOnly: true, secure: true, domain: `.${process.env.DOMAIN_NAME}`})
+      res.cookie('refreshToken', userData.refreshToken, cookieOptions)
       return res.json(userData)
     } catch (error) {
       next(error)
