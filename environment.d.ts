@@ -17,6 +17,7 @@ declare global {
       VISUAL_CROSSING_KEY: string;
       GOOGLE_CLIENT_ID: string;
       GOOGLE_CLIENT_SECRET: string;
+      DOMAIN_NAME: string;
     }
   }
 }
