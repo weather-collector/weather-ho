@@ -4,5 +4,3 @@
 npm-debug.log
 .DS_Store
 /*.env
-dist
-environment.d.ts
