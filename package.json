@@ -4,7 +4,7 @@
   "description": "weather-yo server",
   "main": "src/app.ts",
   "engines": {
-    "node": "14.x"
+    "node": "20.x"
   },
   "scripts": {
     "start": "node dist/app.js",
